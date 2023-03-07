@@ -1,0 +1,27 @@
+{
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "overrides": [
+    {
+      "files": [
+        "src/theme/*",
+        "*.styles.tsx"
+      ],
+      "options": {
+        "quoteProps": "as-needed"
+      }
+    }
+  ],
+  "printWidth": 80,
+  "quoteProps": "consistent",
+  "react/jsx-max-props-per-line": [
+    3,
+    {
+      "when": "always"
+    }
+  ],
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false
+}
