@@ -27,7 +27,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - "6380:6380"
 
   celery:
     depends_on:
@@ -48,7 +48,7 @@ services:
     build: ./backend
     container_name: chat_flower
     env_file: ./backend/docker-compose.env
-    command: celery -A apps.config.celery flower --port=5555
+    command: celery -A config.celery flower --port=5555
     ports:
       - 5555:5555
     restart: always

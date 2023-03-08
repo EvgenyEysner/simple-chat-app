@@ -20,7 +20,7 @@ env = environ.Env(
     DJANGO_USE_DEBUG_TOOLBAR=(bool, False),
     DJANGO_SECRET_KEY=(str, ""),
     DJANGO_ALLOWED_HOSTS=(list, ["127.0.0.1", "localhost", "0.0.0.0"]),
-    DJANGO_DATABASE_URL=(str, "sqlite:///data.db"),
+    DJANGO_DATABASE_URL=(str, "sqlite:///chat.db"),
     DJANGO_SERVER_URL=(str, "http://localhost:8000"),
     DJANGO_FRONTEND_URL=(str, "http://localhost:3000"),
     DJANGO_STATIC_ROOT=(str, "staticfiles"),
@@ -69,7 +69,7 @@ environ.Env.read_env()
 
 DEBUG = env.bool("DJANGO_DEBUG")
 
-AUTH_USER_MODEL = "account.user"
+# AUTH_USER_MODEL = "account.user"
 
 BASE_URL = env("DJANGO_SERVER_URL")
 
@@ -90,7 +90,6 @@ DJANGO_APPS = (
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
-    "taggit",
 )
 
 THIRD_PARTY_APPS = (
@@ -108,18 +107,38 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": env("DATABASE_NAME"),
-        "USER": env("DATABASE_USERNAME"),
-        "PASSWORD": env("DATABASE_PASSWORD"),
-        "HOST": env("DATABASE_HOST"),
-        "PORT": env("DATABASE_PORT"),
+# Database settings
+DATABASE_PARAMS = env.db("DJANGO_DATABASE_URL")
+DATABASES = {"default": DATABASE_PARAMS}
+
+for database_name, database_settings in DATABASES.items():
+    if database_settings["ENGINE"] == "django.db.backends.sqlite3":
+        continue
+
+    database_settings["OPTIONS"] = {
+        "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        # Tell MySQLdb to connect with 'utf8mb4' character set
+        "charset": "utf8mb4",
     }
-}
+
+    database_settings["TEST"] = {
+        # Tell Django to build the test database with the 'utf8mb4' character set
+        "CHARSET": "utf8mb4",
+        "COLLATION": "utf8mb4_unicode_ci",
+    }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": env("DATABASE_NAME"),
+#         "USER": env("DATABASE_USERNAME"),
+#         "PASSWORD": env("DATABASE_PASSWORD"),
+#         "HOST": env("DATABASE_HOST"),
+#         "PORT": env("DATABASE_PORT"),
+#     }
+# }
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -263,7 +282,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s"
         },
     },
     "handlers": {
@@ -306,8 +325,8 @@ CELERY_RETRY_DELAY = 15
 CELERY_RETRY_MAX_TIMES = 15  # 15 retries
 
 # Email server configuration
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = env("EMAIL_PORT")
-EMAIL_USE_TLS = True
+# EMAIL_HOST = env("EMAIL_HOST")
+# EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+# EMAIL_PORT = env("EMAIL_PORT")
+# EMAIL_USE_TLS = True

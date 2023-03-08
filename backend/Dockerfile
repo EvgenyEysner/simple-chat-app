@@ -55,6 +55,7 @@ RUN apt-get update \
   shared-mime-info \
   mime-support \
   libpq-dev \
+  mariadb-client\
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

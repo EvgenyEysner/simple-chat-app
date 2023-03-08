@@ -23,6 +23,9 @@ django-taggit = "==3.1.0"
 markdown = "==3.4.1"
 flake8 = "*"
 black = "==21.8b0"
+# Utility
+django-mysql = "==4.7.1"                     # Django-MySQL extends Django’s built-in MySQL and MariaDB support
+mysqlclient = "==2.1.1"
 
 [dev-packages]
 
